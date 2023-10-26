@@ -1,0 +1,42 @@
+import random
+
+def funcion_objetivo(x):
+    # Define la función que queremos minimizar
+    return x**2
+
+def generar_vecindario(solucion_actual, rango=0.1):
+    # Genera vecinos dentro de un rango dado
+    return solucion_actual + random.uniform(-rango, rango)
+
+def busqueda_tabu(iteraciones):
+    mejor_solucion = random.uniform(-10, 10)
+    mejor_valor = funcion_objetivo(mejor_solucion)
+    lista_tabu = []
+
+    for _ in range(iteraciones):
+        vecino = generar_vecindario(mejor_solucion)
+        
+        # Evita movimientos tabú
+        while vecino in lista_tabu:
+            vecino = generar_vecindario(mejor_solucion)
+
+        valor_vecino = funcion_objetivo(vecino)
+
+        # Actualiza la mejor solución si es mejor que la actual
+        if valor_vecino < mejor_valor:
+            mejor_solucion = vecino
+            mejor_valor = valor_vecino
+
+        # Actualiza la lista tabú
+        lista_tabu.append(vecino)
+
+        # Mantén la lista tabú de longitud limitada
+        if len(lista_tabu) > 5:
+            lista_tabu.pop(0)
+
+    return mejor_solucion, mejor_valor
+
+# Ejemplo de uso con 100 iteraciones
+solucion_optima, valor_optimo = busqueda_tabu(100)
+print(f"Solución óptima: {solucion_optima}")
+print(f"Valor óptimo: {valor_optimo}")
