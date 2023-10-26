@@ -1,0 +1,25 @@
+import random
+
+def funcion_objetivo(x):
+    # Función objetivo ficticia para maximizar
+    return -(x ** 2)  # Negativo porque estamos maximizando
+
+def hill_climbing(inicial, pasos_maximos):
+    actual = inicial
+    
+    for paso in range(pasos_maximos):
+        vecino = actual + random.uniform(-1, 1)  # Generar un vecino cercano aleatorio
+        valor_actual = funcion_objetivo(actual)
+        valor_vecino = funcion_objetivo(vecino)
+        
+        if valor_vecino > valor_actual:
+            actual = vecino
+    
+    return actual
+
+# Ejemplo de uso
+punto_inicial = 2.0
+max_pasos = 1000
+resultado = hill_climbing(punto_inicial, max_pasos)
+
+print(f"El máximo local se encuentra en x = {resultado}, con un valor de {funcion_objetivo(resultado)}")
