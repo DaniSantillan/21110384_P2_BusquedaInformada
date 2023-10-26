@@ -1,0 +1,36 @@
+import math
+import random
+
+def funcion_objetivo(x):
+    return x**2
+
+def temple_simulado(inicial, temperatura_inicial, factor_enfriamiento, iteraciones):
+    mejor_solucion = inicial
+    mejor_valor = funcion_objetivo(inicial)
+
+    for i in range(iteraciones):
+        temperatura_actual = temperatura_inicial / (1 + factor_enfriamiento * i)
+        
+        vecino = mejor_solucion + random.uniform(-1, 1)  # Generar un vecino aleatorio
+        valor_vecino = funcion_objetivo(vecino)
+        
+        # Probabilidad de aceptar el vecino como la nueva mejor solución
+        probabilidad_aceptacion = math.exp(-(valor_vecino - mejor_valor) / temperatura_actual)
+        
+        if valor_vecino < mejor_valor or random.uniform(0, 1) < probabilidad_aceptacion:
+            mejor_solucion = vecino
+            mejor_valor = valor_vecino
+
+    return mejor_solucion, mejor_valor
+
+# Parámetros iniciales
+inicial = 2.0
+temperatura_inicial = 100.0
+factor_enfriamiento = 0.01
+iteraciones = 1000
+
+# Ejecutar Temple Simulado
+solucion_final, valor_final = temple_simulado(inicial, temperatura_inicial, factor_enfriamiento, iteraciones)
+
+print(f"Solución final: {solucion_final}")
+print(f"Valor final: {valor_final}")
