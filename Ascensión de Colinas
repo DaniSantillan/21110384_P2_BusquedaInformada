@@ -1,0 +1,22 @@
+import heapq
+
+def heuristic(node):
+    # Función heurística simple, puedes personalizarla según el problema
+    return node[0] + node[1]
+
+def hill_climbing(start, goal):
+    current = start
+    while current != goal:
+        neighbors = [(current[0]+1, current[1]), (current[0], current[1]+1)]
+        neighbors = [n for n in neighbors if 0 <= n[0] <= 10 and 0 <= n[1] <= 10]  # Limitar al espacio de búsqueda
+        neighbors.sort(key=heuristic)
+        if heuristic(neighbors[0]) >= heuristic(current):
+            break
+        current = neighbors[0]
+    return current
+
+start = (0, 0)
+goal = (5, 5)
+
+result = hill_climbing(start, goal)
+print(f"El resultado de la Ascensión de Colinas es: {result}")
