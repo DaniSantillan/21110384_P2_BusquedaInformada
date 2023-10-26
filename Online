@@ -1,0 +1,29 @@
+import requests
+from bs4 import BeautifulSoup
+
+def buscar_en_wikipedia(termino):
+    # Construir la URL de búsqueda en Wikipedia
+    url = f"https://es.wikipedia.org/w/index.php?search={termino}"
+
+    # Realizar la solicitud HTTP
+    respuesta = requests.get(url)
+
+    # Verificar si la solicitud fue exitosa (código de estado 200)
+    if respuesta.status_code == 200:
+        # Analizar el HTML de la página con BeautifulSoup
+        soup = BeautifulSoup(respuesta.text, 'html.parser')
+
+        # Encontrar el primer resultado de la búsqueda
+        primer_resultado = soup.find('div', class_='mw-search-result-heading')
+
+        if primer_resultado:
+            # Extraer el título del primer resultado
+            titulo = primer_resultado.a.text
+            print(f"Resultado encontrado: {titulo}")
+        else:
+            print("No se encontraron resultados.")
+    else:
+        print(f"Error en la solicitud. Código de estado: {respuesta.status_code}")
+
+# Prueba con el término "Python"
+buscar_en_wikipedia("Python")
