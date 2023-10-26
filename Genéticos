@@ -1,0 +1,40 @@
+import heapq
+
+def distancia_hamming(secuencia_actual, secuencia_objetivo):
+    # Calcula la distancia de Hamming entre dos secuencias
+    return sum(a != b for a, b in zip(secuencia_actual, secuencia_objetivo))
+
+def busqueda_genetica_informada(secuencia_inicial, secuencia_objetivo):
+    # Utiliza el algoritmo A* para encontrar la secuencia genética objetivo
+    heap = [(distancia_hamming(secuencia_inicial, secuencia_objetivo), secuencia_inicial)]
+    while heap:
+        _, actual = heapq.heappop(heap)
+        if actual == secuencia_objetivo:
+            return actual
+        vecinos = generar_vecinos(actual)
+        for vecino in vecinos:
+            heapq.heappush(heap, (distancia_hamming(vecino, secuencia_objetivo), vecino))
+    return None
+
+def generar_vecinos(secuencia):
+    # Genera vecinos cambiando un solo elemento en la secuencia
+    vecinos = []
+    for i in range(len(secuencia)):
+        vecino = list(secuencia)
+        vecino[i] = mutar_elemento(vecino[i])
+        vecinos.append("".join(vecino))
+    return vecinos
+
+def mutar_elemento(elemento):
+    # Muta un elemento de la secuencia (por ejemplo, cambiar una base nitrogenada)
+    # En una implementación real, esta función podría ser más compleja
+    return elemento
+
+# Ejemplo de uso
+secuencia_inicial = "ATCGATCG"
+secuencia_objetivo = "GTCGATCG"
+resultado = busqueda_genetica_informada(secuencia_inicial, secuencia_objetivo)
+
+print(f"Secuencia Inicial: {secuencia_inicial}")
+print(f"Secuencia Objetivo: {secuencia_objetivo}")
+print(f"Resultado de la búsqueda: {resultado}")
