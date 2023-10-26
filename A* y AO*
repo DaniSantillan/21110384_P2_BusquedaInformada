@@ -1,0 +1,62 @@
+import heapq
+
+class Nodo:
+    def __init__(self, estado, costo_g, costo_h=0, padre=None):
+        self.estado = estado
+        self.costo_g = costo_g
+        self.costo_h = costo_h
+        self.padre = padre
+
+    def costo_total(self):
+        return self.costo_g + self.costo_h
+
+def a_estrella(inicial, objetivo, heuristica):
+    abiertos = []
+    cerrados = set()
+
+    nodo_inicial = Nodo(inicial, 0, heuristica(inicial))
+    heapq.heappush(abiertos, (nodo_inicial.costo_total(), nodo_inicial))
+
+    while abiertos:
+        _, nodo_actual = heapq.heappop(abiertos)
+
+        if nodo_actual.estado == objetivo:
+            # Reconstruir el camino
+            camino = []
+            while nodo_actual:
+                camino.insert(0, nodo_actual.estado)
+                nodo_actual = nodo_actual.padre
+            return camino
+
+        cerrados.add(nodo_actual.estado)
+
+        for sucesor in expandir_nodo(nodo_actual):
+            if sucesor.estado not in cerrados:
+                nuevo_costo_g = nodo_actual.costo_g + costo_entre_nodos(nodo_actual, sucesor)
+                nuevo_nodo = Nodo(sucesor.estado, nuevo_costo_g, heuristica(sucesor.estado), nodo_actual)
+
+                if any(n[1].estado == nuevo_nodo.estado and n[1].costo_g <= nuevo_costo_g for n in abiertos):
+                    continue
+
+                heapq.heappush(abiertos, (nuevo_nodo.costo_total(), nuevo_nodo))
+
+    return None  # No se encontró camino
+
+# Funciones auxiliares (a implementar según el problema)
+def expandir_nodo(nodo):
+    # Retorna una lista de sucesores
+    pass
+
+def costo_entre_nodos(nodo_actual, sucesor):
+    # Retorna el costo entre nodo_actual y sucesor
+    pass
+
+# Ejemplo de uso
+inicial = (0, 0)
+objetivo = (4, 4)
+
+def heuristica_manhattan(estado):
+    return abs(estado[0] - objetivo[0]) + abs(estado[1] - objetivo[1])
+
+camino_a_estrella = a_estrella(inicial, objetivo, heuristica_manhattan)
+print("Camino A*:", camino_a_estrella)
