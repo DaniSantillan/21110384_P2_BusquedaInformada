@@ -1,0 +1,51 @@
+import heapq
+
+def a_star(graph, start, goal, heuristic):
+    # Estructuras de datos para la búsqueda
+    open_set = []  # nodos por explorar
+    heapq.heappush(open_set, (0, start))  # Tupla (costo + heurística, nodo)
+    came_from = {}  # nodos previos para reconstruir el camino
+    cost_so_far = {start: 0}  # costo acumulado desde el inicio
+
+    while open_set:
+        current_cost, current_node = heapq.heappop(open_set)
+
+        if current_node == goal:
+            # Hemos llegado al objetivo, reconstruir el camino
+            path = []
+            while current_node in came_from:
+                path.insert(0, current_node)
+                current_node = came_from[current_node]
+            path.insert(0, start)
+            return path
+
+        for neighbor, cost in graph[current_node].items():
+            new_cost = cost_so_far[current_node] + cost
+            if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
+                cost_so_far[neighbor] = new_cost
+                priority = new_cost + heuristic(neighbor, goal)
+                heapq.heappush(open_set, (priority, neighbor))
+                came_from[neighbor] = current_node
+
+    return None  # No hay camino
+
+# Ejemplo de grafo y heurística
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'D': 3, 'E': 7},
+    'C': {'A': 4, 'F': 2},
+    'D': {'B': 3, 'G': 5},
+    'E': {'B': 7, 'G': 8},
+    'F': {'C': 2, 'G': 3},
+    'G': {'D': 5, 'E': 8, 'F': 3}
+}
+
+def heuristic(node, goal):
+    # Heurística simple: distancia Manhattan entre nodos
+    x1, y1 = ord(node[0]) - ord('A'), int(node[1])
+    x2, y2 = ord(goal[0]) - ord('A'), int(goal[1])
+    return abs(x1 - x2) + abs(y1 - y2)
+
+# Encontrar el camino más corto de 'A' a 'G'
+path = a_star(graph, 'A', 'G', heuristic)
+print("Camino más corto:", path)
